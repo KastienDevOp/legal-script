@@ -1,0 +1,24 @@
+BEGIN_LICENSE_AGREEMENT
+
+COMMENCE_LEGAL_PROCEEDINGS
+
+SUMMON defendant
+SUMMON accomplice
+
+READ_EVIDENCE evidence.txt
+
+DELIVER VERDICT Initial values: defendant = (defendant), accomplice = (accomplice)
+
+DEFINE STATUTE calculate_sentence
+    sentence_length = defendant * 2 + accomplice
+    DELIVER VERDICT The calculated sentence length is (sentence_length) years.
+END STATUTE
+
+final_damages = defendant * accomplice * 1000
+DELIVER VERDICT The final damages amount to (final_damages) dollars.
+
+WRITE_VERDICT verdict.txt
+
+CASE_DISMISSED
+
+END_LICENSE_AGREEMENT
