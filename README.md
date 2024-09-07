@@ -1,63 +1,84 @@
-# 🏛️ LegalScript: Where Code Meets the Courtroom! 🧑‍⚖️
+# 🧑‍⚖️ Legal License Programming Language (LLPL) 🏛️
 
-Welcome to LegalScript, the world's first programming language that brings the drama and excitement of the courtroom to your terminal! Are you tired of boring, conventional programming languages? Do you wish your code could object, sustain, and dismiss cases? Look no further!
+## Because every line of code should be admissible in court! 🕵️‍♂️💼
 
-## 📜 What is LegalScript?
+Welcome to the most litigious programming language ever created! Are you tired of writing code that won't hold up in a court of law? Look no further! LLPL is here to save the day (and your assets)! 🦸‍♀️💰
 
-LegalScript is a groundbreaking, tongue-in-cheek programming language that combines the precision of legal proceedings with the power of coding. It's perfect for:
+### 🤔 What is LLPL?
 
-- Lawyers who want to automate their courtroom antics
-- Developers who've always dreamed of being the next Perry Mason
-- Anyone who thinks traditional programming languages lack *gravitas*
+LLPL is a revolutionary programming language that looks like a legal license agreement. Why? Because we believe that if software is eating the world, lawyers should get their fair share of the meal! 🍽️👨‍⚖️
 
-## 🚀 Features
+### 🚀 Features
 
-- **BEGIN_LICENSE_AGREEMENT**: Because every good program starts with terms and conditions nobody reads!
-- **COMMENCE_LEGAL_PROCEEDINGS**: Initiate your code with the bang of a gavel!
-- **SUMMON** and **SWEAR**: Bring variables to life and make them testify under oath!
-- **LEGAL_LOOPHOLE**: For when you need to bend the rules of programming, legally of course.
-- **OBJECTION_IF** and **SUSTAINED_OTHERWISE**: Conditional statements have never been so dramatic!
-- **CASE_DISMISSED**: End your program with authority!
+- **SUMMON** variables into existence (no subpoenas required!)
+- **READ_EVIDENCE** from files (admissible in all digital courts)
+- **DELIVER VERDICT** to output results (no appeals allowed)
+- **DEFINE STATUTE** for reusable code blocks (precedent-setting functionality)
+- **WRITE_VERDICT** to files (for the court stenographer)
+- **CASE_DISMISSED** to end your program (and avoid a mistrial)
 
-## 🏗️ Installation
+### 📄 Important: The "LICENSE" Requirement
 
-1. Clone this repository of justice
-2. Compile the interpreter (no law degree required)
-3. Write your first LegalScript in a file named `LICENSE` (yes, really)
+In LLPL, your source code **MUST** be in a file named `LICENSE`. Why, you ask? 
 
-## 🧑‍💻 Usage
+1. It's legally binding* 📜
+2. It keeps the lawyers happy 👔
+3. It confuses the heck out of GitHub 🤪
 
-```bash
-python interpreter.py
-```
+Remember: If it's not in a file called `LICENSE`, it's not valid LLPL code. It's just plain old illegal code! 🚫👮‍♀️
 
-## 📝 Example
+*Not actually legally binding. Please don't sue us.
+
+### 💡 Example
 
 ```
+BEGIN_LICENSE_AGREEMENT
+
 COMMENCE_LEGAL_PROCEEDINGS
 
 SUMMON defendant
-SWEAR defendant TO 0
+SUMMON accomplice
 
-COMMENCE LEGAL_LOOPHOLE
-    IF defendant < 5
-        SENTENCE defendant
-    ELSE
-        CASE_DISMISSED
-    END IF
-END LEGAL_LOOPHOLE
+READ_EVIDENCE criminal_records.txt
 
-DELIVER VERDICT "The defendant has been sentenced (defendant) times!"
+DELIVER VERDICT The defendant's prior convictions: (defendant)
 
-COURT_ADJOURNED
+DEFINE STATUTE calculate_sentence
+    sentence_length = defendant * 2 + accomplice
+    DELIVER VERDICT Justice shall be served for (sentence_length) years!
+END STATUTE
+
+calculate_sentence
+
+damages = defendant * accomplice * 1000
+DELIVER VERDICT The court orders restitution of $(damages)
+
+WRITE_VERDICT permanent_record.txt
+
+CASE_DISMISSED
+
+END_LICENSE_AGREEMENT
 ```
 
-## 🤝 Contributing
+### 🛠️ Installation
 
-Want to add more legal jargon to our already jargon-heavy language? Open a pull request! All contributions will be reviewed by our panel of imaginary judges.
+1. Clone this repository (no legal consultation required)
+2. Plead the Fifth
+3. Create a file named `LICENSE` with your LLPL code
+4. Run `python legal_interpreter.py LICENSE`
 
-## ⚖️ License
+### ⚠️ Disclaimer
 
-This project is licensed under the "Totally Not Legally Binding" license. Use at your own risk, and maybe consult a real lawyer... or don't. We're programmers, not attorneys!
+This language is not a substitute for actual legal advice. If you find yourself in real legal trouble, please consult a licensed attorney. We are not responsible for any civil or criminal liabilities incurred while using LLPL. Use at your own risk! 🙅‍♂️⚖️
 
-Remember: With great power comes great responsibility. Use LegalScript wisely, and may the code be with you! 🧙‍♂️⚖️
+### 🤝 Contributing
+
+Want to contribute? Great! Please submit your pull requests in triplicate, notarized, and with at least two character witnesses. All contributions will be reviewed by our team of code lawyers. And remember, all proposed changes must be submitted in a file named `LICENSE`, or our legal team will object! 🧑‍⚖️
+
+### 📜 License
+
+This project is licensed under the "You Can't Sue Me" Public License. For more details, please consult your local library's legal section or a magic 8-ball. And yes, our license is in a file named `LICENSE` - we're not hypocrites! 😉
+
+Remember: In LLPL, we don't have bugs – we have "legal loopholes"! Happy coding, and may the law be ever in your favor! 🧑‍💻⚖️🍀
+
+P.S. If you're wondering why we're so insistent on the `LICENSE` file name, it's because we believe in hiding our code in plain sight. It's the last place anyone would look for actual code! 🕵️‍♀️🔍
