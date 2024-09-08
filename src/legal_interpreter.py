@@ -1,54 +1,39 @@
 import re
 import os
 from dataclasses import dataclass
-from typing import List, Union, Dict, Optional
-
-# AST Node classes
-@dataclass
-class Statement:
-    pass
+from typing import List, Dict, Optional
+from collections import defaultdict
 
 @dataclass
-class Summon(Statement):
-    variable: str
+class Statement: pass
 
 @dataclass
-class ReadEvidence(Statement):
-    filename: str
-
+class Summon(Statement): variable: str
 @dataclass
-class DeliverVerdict(Statement):
-    message: str
-
+class ReadEvidence(Statement): filename: str
+@dataclass
+class DeliverVerdict(Statement): message: str
 @dataclass
 class DefineStatute(Statement):
     name: str
     body: List[Statement]
-
 @dataclass
-class WriteVerdict(Statement):
-    filename: str
-
+class WriteVerdict(Statement): filename: str
 @dataclass
 class Assignment(Statement):
     variable: str
     expression: str
-
 @dataclass
-class StatuteCall(Statement):
-    name: str
-
+class StatuteCall(Statement): name: str
 @dataclass
 class LegalLoophole(Statement):
     condition: str
     body: List[Statement]
-
 @dataclass
 class Conditional(Statement):
     condition: str
     then_body: List[Statement]
     else_body: List[Statement]
-
 @dataclass
 class LegalProgram:
     statements: List[Statement]
@@ -59,7 +44,7 @@ class LegalParser:
         self.lines: List[str] = []
 
     def parse(self, code: str) -> LegalProgram:
-        self.lines = [line.strip() for line in code.strip().split('\n') if line.strip()]
+        self.lines = [line.strip() for line in code.strip().splitlines() if line.strip()]
         if self.lines[0] != "BEGIN_LICENSE_AGREEMENT" or self.lines[-1] != "END_LICENSE_AGREEMENT":
             raise SyntaxError("Invalid license agreement structure")
 
@@ -79,34 +64,27 @@ class LegalParser:
         line = self.lines[self.current_line]
         self.current_line += 1
 
-        if line in ["BEGIN_LICENSE_AGREEMENT", "END_LICENSE_AGREEMENT"]:
-            return None  # Skip these lines
-        elif line == "COMMENCE_LEGAL_PROCEEDINGS":
-            return None
-        elif line.startswith("SUMMON"):
-            parts = line.split(maxsplit=1)
-            return Summon(parts[1]) if len(parts) > 1 else None
-        elif line.startswith("READ_EVIDENCE"):
-            parts = line.split(maxsplit=1)
-            return ReadEvidence(parts[1]) if len(parts) > 1 else None
-        elif line.startswith("DELIVER VERDICT"):
-            return DeliverVerdict(line[15:].strip())
-        elif line.startswith("DEFINE STATUTE"):
-            return self.parse_statute()
-        elif line.startswith("WRITE_VERDICT"):
-            parts = line.split(maxsplit=1)
-            return WriteVerdict(parts[1]) if len(parts) > 1 else None
-        elif line == "CASE_DISMISSED":
-            return None
-        elif line.startswith("COMMENCE LEGAL_LOOPHOLE"):
-            return self.parse_loophole()
-        elif line.startswith("IF"):
-            return self.parse_conditional()
-        elif '=' in line:
+        statement_map = {
+            "SUMMON": lambda: Summon(line.split(maxsplit=1)[1]),
+            "READ_EVIDENCE": lambda: ReadEvidence(line.split(maxsplit=1)[1]),
+            "DELIVER VERDICT": lambda: DeliverVerdict(line[15:].strip()),
+            "DEFINE STATUTE": self.parse_statute,
+            "WRITE_VERDICT": lambda: WriteVerdict(line.split(maxsplit=1)[1]),
+            "COMMENCE LEGAL_LOOPHOLE": self.parse_loophole,
+            "IF": self.parse_conditional
+        }
+
+        for key, func in statement_map.items():
+            if line.startswith(key):
+                return func()
+
+        if '=' in line:
             var, expr = line.split('=', 1)
             return Assignment(var.strip(), expr.strip())
-        else:
+        elif line not in ["BEGIN_LICENSE_AGREEMENT", "END_LICENSE_AGREEMENT", "COMMENCE_LEGAL_PROCEEDINGS", "CASE_DISMISSED"]:
             return StatuteCall(line)
+
+        return None
 
     def parse_statute(self) -> DefineStatute:
         name = self.lines[self.current_line - 1].split(maxsplit=2)[-1]
@@ -115,8 +93,7 @@ class LegalParser:
             statement = self.parse_statement()
             if statement:
                 body.append(statement)
-        if self.current_line < len(self.lines):
-            self.current_line += 1  # Skip END STATUTE
+        self.current_line += 1  # Skip END STATUTE
         return DefineStatute(name, body)
 
     def parse_loophole(self) -> LegalLoophole:
@@ -126,14 +103,12 @@ class LegalParser:
             statement = self.parse_statement()
             if statement:
                 body.append(statement)
-        if self.current_line < len(self.lines):
-            self.current_line += 1  # Skip END LEGAL_LOOPHOLE
+        self.current_line += 1  # Skip END LEGAL_LOOPHOLE
         return LegalLoophole(condition, body)
 
     def parse_conditional(self) -> Conditional:
         condition = self.lines[self.current_line - 1].split("IF", 1)[1].strip()
-        then_body = []
-        else_body = []
+        then_body, else_body = [], []
         current_body = then_body
         while self.current_line < len(self.lines) and self.lines[self.current_line] != "END IF":
             if self.lines[self.current_line] == "ELSE":
@@ -143,56 +118,44 @@ class LegalParser:
             statement = self.parse_statement()
             if statement:
                 current_body.append(statement)
-        if self.current_line < len(self.lines):
-            self.current_line += 1  # Skip END IF
+        self.current_line += 1  # Skip END IF
         return Conditional(condition, then_body, else_body)
 
 class LegalInterpreter:
     def __init__(self):
-        self.variables: Dict[str, float] = {}
+        self.variables: Dict[str, float] = defaultdict(float)
         self.statutes: Dict[str, List[Statement]] = {}
         self.verdict: List[str] = []
         self.current_directory: str = os.getcwd()
         self.loop_iterations: int = 0
+        self.MAX_LOOP_ITERATIONS = 1000
 
     def execute(self, program: LegalProgram):
         for statement in program.statements:
             self.execute_statement(statement)
 
     def execute_statement(self, statement: Statement):
-        if isinstance(statement, Summon):
-            self.variables[statement.variable] = 0
-        elif isinstance(statement, ReadEvidence):
-            self.read_evidence(statement.filename)
-        elif isinstance(statement, DeliverVerdict):
-            self.deliver_verdict(statement.message)
-        elif isinstance(statement, DefineStatute):
-            self.statutes[statement.name] = statement.body
-        elif isinstance(statement, WriteVerdict):
-            self.write_verdict(statement.filename)
-        elif isinstance(statement, Assignment):
-            self.variables[statement.variable] = self.evaluate(statement.expression)
-        elif isinstance(statement, StatuteCall):
-            self.execute_statute(statement.name)
-        elif isinstance(statement, LegalLoophole):
-            self.execute_loophole(statement)
-        elif isinstance(statement, Conditional):
-            self.execute_conditional(statement)
+        statement_map = {
+            Summon: lambda s: None,  # Variables are initialized to 0 by defaultdict
+            ReadEvidence: lambda s: self.read_evidence(s.filename),
+            DeliverVerdict: lambda s: self.deliver_verdict(s.message),
+            DefineStatute: lambda s: self.statutes.update({s.name: s.body}),
+            WriteVerdict: lambda s: self.write_verdict(s.filename),
+            Assignment: lambda s: self.variables.update({s.variable: self.evaluate(s.expression)}),
+            StatuteCall: lambda s: self.execute_statute(s.name),
+            LegalLoophole: lambda s: self.execute_loophole(s),
+            Conditional: lambda s: self.execute_conditional(s)
+        }
+        statement_map[type(statement)](statement)
 
     def read_evidence(self, filename: str):
-        full_path = os.path.join(self.current_directory, filename)
         try:
-            with open(full_path, 'r') as f:
+            with open(os.path.join(self.current_directory, filename), 'r') as f:
                 content = f.read()
-                parser = LegalParser()
-                evidence_program = parser.parse(content)
+                evidence_program = LegalParser().parse(content)
                 self.execute(evidence_program)
-        except FileNotFoundError:
-            print(f"Error: Evidence file '{filename}' not found.")
-        except IOError:
-            print(f"Error: Unable to read evidence file '{filename}'.")
-        except SyntaxError as e:
-            print(f"Syntax Error in evidence file '{filename}': {str(e)}")
+        except (FileNotFoundError, IOError, SyntaxError) as e:
+            print(f"Error reading evidence file '{filename}': {str(e)}")
 
     def deliver_verdict(self, message: str):
         result = re.sub(r'\(([^)]+)\)', lambda m: str(self.evaluate(m.group(1))), message)
@@ -203,8 +166,8 @@ class LegalInterpreter:
         try:
             with open(filename, 'w') as f:
                 f.write("\n".join(self.verdict))
-        except IOError:
-            print(f"Error: Unable to write verdict to file '{filename}'.")
+        except IOError as e:
+            print(f"Error writing verdict to file '{filename}': {str(e)}")
 
     def execute_statute(self, name: str):
         if name in self.statutes:
@@ -215,57 +178,46 @@ class LegalInterpreter:
 
     def execute_loophole(self, loophole: LegalLoophole):
         self.loop_iterations = 0
-        while self.evaluate(loophole.condition):
+        while self.evaluate(loophole.condition) and self.loop_iterations < self.MAX_LOOP_ITERATIONS:
             for statement in loophole.body:
                 self.execute_statement(statement)
-            # Add a safety check to prevent infinite loops
-            if self.loop_iterations > 1000:
-                print("Warning: Possible infinite loop detected. Terminating loophole execution.")
-                break
             self.loop_iterations += 1
+        if self.loop_iterations == self.MAX_LOOP_ITERATIONS:
+            print(f"Warning: Loophole execution terminated after {self.MAX_LOOP_ITERATIONS} iterations.")
 
     def execute_conditional(self, conditional: Conditional):
-        if self.evaluate(conditional.condition):
-            for statement in conditional.then_body:
-                self.execute_statement(statement)
-        else:
-            for statement in conditional.else_body:
-                self.execute_statement(statement)
+        body = conditional.then_body if self.evaluate(conditional.condition) else conditional.else_body
+        for statement in body:
+            self.execute_statement(statement)
 
     def evaluate(self, expr: str) -> float:
-        expr = re.sub(r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b', lambda m: str(self.variables.get(m.group(1), 0)), expr)
+        expr = re.sub(r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b', lambda m: str(self.variables[m.group(1)]), expr)
         try:
-            result = float(eval(expr, {"__builtins__": None}, {"abs": abs, "max": max, "min": min}))
-            return round(result, 2)  # Round to 2 decimal places
+            return round(float(eval(expr, {"__builtins__": None}, {"abs": abs, "max": max, "min": min})), 2)
         except (NameError, SyntaxError, TypeError, ZeroDivisionError) as e:
             print(f"Error evaluating expression '{expr}': {str(e)}")
             return 0.0
 
 def read_file(filename: str) -> str:
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            return file.read()
-    elif os.path.exists(filename + '.lspl'):
-        with open(filename + '.lspl', 'r') as file:
-            return file.read()
-    else:
-        raise FileNotFoundError(f"No file found with name '{filename}' or '{filename}.lspl'")
+    for ext in ['', '.lspl']:
+        try:
+            with open(filename + ext, 'r') as file:
+                return file.read()
+        except FileNotFoundError:
+            continue
+    raise FileNotFoundError(f"No file found with name '{filename}' or '{filename}.lspl'")
 
 def run_legal_code():
     try:
-        # Read the LICENSE file
         license_code = read_file('LICENSE')
-        
         parser = LegalParser()
         interpreter = LegalInterpreter()
         
         try:
             ast = parser.parse(license_code)
             interpreter.execute(ast)
-        except SyntaxError as e:
-            print(f"Syntax Error: {str(e)}")
-        except Exception as e:
-            print(f"Unexpected Error: {str(e)}")
+        except (SyntaxError, Exception) as e:
+            print(f"Error executing legal code: {type(e).__name__}: {str(e)}")
     except FileNotFoundError as e:
         print(f"Error: {str(e)}")
     except IOError:
