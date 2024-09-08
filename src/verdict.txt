@@ -1,4 +1,0 @@
-defendant = 3
-accomplice = 4
-sentence_length = 10
-final_damages = 12000

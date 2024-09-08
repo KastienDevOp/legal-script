@@ -1,0 +1,8 @@
+Initial values: defendant = 4.0, accomplice = 2.0, victim_count = 3.0, total_damages = 75000.0
+The base sentence is 10.0 years.
+The sentence adjusted for victim count is 11.5 years.
+No sentence reduction needed: 11.5 years
+The damages per victim amount to 25000.0 dollars.
+A 10% punitive damage has been added. Total damages: 82500.0 dollars.
+The final sentence is 11.5 years in minimum security.
+The total damages to be paid amount to 82500.0 dollars.

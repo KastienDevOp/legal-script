@@ -4,20 +4,30 @@ COMMENCE_LEGAL_PROCEEDINGS
 
 SUMMON defendant
 SUMMON accomplice
+SUMMON victim_count
+SUMMON total_damages
 
-READ_EVIDENCE evidence.txt
+READ_EVIDENCE evidence.lspl
 
-DELIVER VERDICT Initial values: defendant = (defendant), accomplice = (accomplice)
+DELIVER VERDICT Initial values: defendant = (defendant), accomplice = (accomplice), victim_count = (victim_count), total_damages = (total_damages)
 
-DEFINE STATUTE calculate_sentence
-    sentence_length = defendant * 2 + accomplice
-    DELIVER VERDICT The calculated sentence length is (sentence_length) years.
-END STATUTE
+READ_EVIDENCE sentencing.lspl
+READ_EVIDENCE damages.lspl
 
-final_damages = defendant * accomplice * 1000
-DELIVER VERDICT The final damages amount to (final_damages) dollars.
+calculate_base_sentence
+adjust_for_victims
+apply_sentence_reduction
+calculate_damages
 
-WRITE_VERDICT verdict.txt
+IF final_sentence > 15
+    DELIVER VERDICT The final sentence is (final_sentence) years in maximum security.
+ELSE
+    DELIVER VERDICT The final sentence is (final_sentence) years in minimum security.
+END IF
+
+DELIVER VERDICT The total damages to be paid amount to (final_damages) dollars.
+
+WRITE_VERDICT final_verdict.txt
 
 CASE_DISMISSED
 

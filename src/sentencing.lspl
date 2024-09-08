@@ -1,0 +1,26 @@
+BEGIN_LICENSE_AGREEMENT
+
+DEFINE STATUTE calculate_base_sentence
+    base_sentence = defendant * 2 + accomplice
+    DELIVER VERDICT The base sentence is (base_sentence) years.
+END STATUTE
+
+DEFINE STATUTE adjust_for_victims
+    victim_modifier = victim_count * 0.5
+    adjusted_sentence = base_sentence + victim_modifier
+    DELIVER VERDICT The sentence adjusted for victim count is (adjusted_sentence) years.
+END STATUTE
+
+DEFINE STATUTE apply_sentence_reduction
+    final_sentence = adjusted_sentence
+    IF final_sentence > 20
+        COMMENCE LEGAL_LOOPHOLE UNTIL final_sentence <= 20
+            final_sentence = final_sentence - 1
+            DELIVER VERDICT Reduced sentence: (final_sentence) years
+        END LEGAL_LOOPHOLE
+    ELSE
+        DELIVER VERDICT No sentence reduction needed: (final_sentence) years
+    END IF
+END STATUTE
+
+END_LICENSE_AGREEMENT

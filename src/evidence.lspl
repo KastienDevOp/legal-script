@@ -1,0 +1,8 @@
+BEGIN_LICENSE_AGREEMENT
+
+defendant = 4
+accomplice = 2
+victim_count = 3
+total_damages = 75000
+
+END_LICENSE_AGREEMENT

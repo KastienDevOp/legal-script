@@ -1,0 +1,14 @@
+BEGIN_LICENSE_AGREEMENT
+
+DEFINE STATUTE calculate_damages
+    per_victim_damages = total_damages / victim_count
+    DELIVER VERDICT The damages per victim amount to (per_victim_damages) dollars.
+    IF per_victim_damages > 20000
+        final_damages = total_damages * 1.1
+        DELIVER VERDICT A 10% punitive damage has been added. Total damages: (final_damages) dollars.
+    ELSE
+        final_damages = total_damages
+    END IF
+END STATUTE
+
+END_LICENSE_AGREEMENT
